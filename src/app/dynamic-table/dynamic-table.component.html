@@ -1,0 +1,108 @@
+<br>
+<br>
+<button (click)="addColumn()" [disabled]="rows.length > 0">Add Column</button>
+<button (click)="addRow()">Add Row</button>
+<button (click)="onSave()">Save</button>
+<br>
+<br>
+<table>
+  <thead>
+    <tr>
+      <th class="tableHead">Indent</th>
+      <th class="tableHead"> Seq No </th>
+      <th class="tableHead" *ngFor="let column of columns; let columnIndex = index">
+        {{ column.name }}
+        <ng-container *ngIf="columns.length > 1 && columnIndex > 0">
+          <button (click)="deleteColumn(columnIndex)">
+            delete
+          </button>
+        </ng-container>
+      </th>
+    </tr>
+  </thead>
+  <!-- cdkDropList (cdkDropListDropped)="drop($event)" -->
+  <!-- cdkDrag -->
+  <tbody cdkDropList (cdkDropListDropped)="onDrop($event)">
+    <!-- [cdkDragDisabled]="row.rowdisabled" -->
+    <tr *ngFor="let row of rows; let rowIndex = index"  cdkDrag cdkDragLockAxis="y">
+      
+      <th class="col-xs">
+          <ng-container *ngIf="rowIndex > 0">
+            <!-- [disabled]="!row.canIndent" -->
+            <button (click)="indent(row, rowIndex)" [disabled]="!row.canIndent">
+              >
+            </button>
+            {{row.level}}
+          </ng-container>
+      </th>
+
+      <th class="col-xs">
+        <div class="drag-handle">
+          <ng-container [ngTemplateOutlet]="dragHandleTmpl"></ng-container>
+          {{ row.order }}
+        </div>
+      </th>
+
+      <td class="col-md" *ngFor="let column of columns; let isFirst = first; let columnIndex = index">
+        <ng-container *ngIf="row[column.name] !== undefined">
+          <!-- {{rowIndex}} -->
+         
+          <ng-container *ngIf="isFirst">
+            <!-- [ngStyle]="{'padding-left': '20px'}" -->
+            <!-- [disabled]="!row.listEditable"  -->
+            <select class="controls"  [(ngModel)]="row[column.name]" [ngStyle]="{ 'padding-left.px': row.level * 20 }"
+                    (change)="onChangeRowType(row, column)">
+              <option *ngFor="let option of column.options">{{ option.name }}</option>
+           
+            <!-- <ng-container *ngFor="let option of column.options">
+              <optgroup *ngIf="option.children && option.children.length > 0" [label]="option.name">
+                <option *ngFor="let child of option.children" [ngValue]="child">{{ child.name }}</option>
+              </optgroup>
+              <option *ngIf="!option.children || option.children.length === 0" [ngValue]="option">{{ option.name }}</option>
+            </ng-container> -->
+          </select>
+          <!-- <ng-container *ngIf="rowIndex > 0">
+            <button (click)="openParentDialog(row, column.name)">select parent</button>
+          </ng-container> -->
+          </ng-container>
+          <ng-container *ngIf="!isFirst">
+            <!-- <ng-container *ngIf="column.type === 'dropdown'"> -->
+              <!-- [disabled]="!row.editable"  -->
+              <!-- <select [(ngModel)]="row[column.name]"
+                      (change)="onChangeRowType(row)">
+                <option *ngFor="let option of column.options">{{ option.name }}</option>
+              </select>
+            </ng-container> -->
+            <ng-container *ngIf="column.type === 'text'">
+              <!-- [disabled]="!column.editable" -->
+              <input class="controls" type="text"  [(ngModel)]="row[column.name]" 
+              (click)="onCellClick(row, column.name)" (dblclick)="onTextFieldDoubleClick(row, column.name)">
+           
+            <!-- <ng-container *ngIf="column.type === 'derived'"> -->
+              <!-- <div (click)="onCellClick(row, column.name)" style="cursor: pointer">
+                {{ row[column.name] }}
+              </div> -->
+              <!-- <button type="button" (click)="onCellClick(row, column.name)">{{column.name}}</button>
+            </ng-container> -->
+          </ng-container>
+        </ng-container>
+        </ng-container>
+      </td>
+      <ng-container>
+        <!-- [disabled]="!row.canIndent" -->
+        <button (click)="deleteRow(row,rowIndex)">
+          delete
+        </button>
+      </ng-container>
+    </tr>
+  </tbody>
+</table>
+
+<ng-template #dragHandleTmpl>
+	<svg class="bi bi-list handle" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+		xmlns="http://www.w3.org/2000/svg">
+		<path fill-rule="evenodd"
+			d="M2.5 11.5A.5.5 0 013 11h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 7h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4A.5.5 0 013 3h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5z"
+			clip-rule="evenodd" />
+	</svg>
+</ng-template>
