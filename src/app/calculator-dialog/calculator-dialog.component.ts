@@ -8,6 +8,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class CalculatorDialogComponent {
 
+  stringToEvaluate: string=""
+
   constructor(
     public dialogRef: MatDialogRef<any>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
@@ -20,4 +22,10 @@ export class CalculatorDialogComponent {
   closeDialog(){
     this.dialogRef.close();
   }
+
+  takeInput(num: string){
+    this.stringToEvaluate = this.stringToEvaluate + num
+    console.log("string", this.stringToEvaluate)
+  }
+  
 }

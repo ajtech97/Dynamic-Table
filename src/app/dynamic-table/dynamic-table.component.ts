@@ -34,6 +34,11 @@ export class DynamicTableComponent {
         "type": "dropdown", 
         "identifier": "salary_component",
         "options": [
+          // {
+          //   "name":"-",
+          //   "identifier": "none",
+          //   "type": "text",
+          // },
           {
             "name":"A. Salary",
             "identifier": "salary",
@@ -145,6 +150,21 @@ export class DynamicTableComponent {
   }
 
   addRow(): void {
+
+    // this.columns.forEach((column, idx) => {
+    //   if(column?.options){
+    //     // column.options.find((option: any) => option.name.includes('-'))
+    //     // console.log("column", column.name)
+    //     // column.name?.includes('-')
+    //     column.options.forEach((option: any) =>{
+    //       console.log("option",option)
+    //       if(option.name.includes('-')){
+    //         return
+    //       }
+    //     })
+    //   }
+    // })
+
     const newRow : any = [];
     this.columns.forEach((column, index) => {
       if (index === 0) {
@@ -159,6 +179,7 @@ export class DynamicTableComponent {
           newRow.level = 0
           newRow.parent = ''
           newRow.canIndent = true
+          newRow.previousSelection = null
           // newRow.listEditable = true;
         // }
       }
@@ -308,7 +329,10 @@ export class DynamicTableComponent {
   deleteColumn(columnIndex: number): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '250px',
-      data: { message: 'Are you sure you want to delete this column?' }
+      data: { 
+        message: 'Are you sure you want to delete this column?',
+        action: true 
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -354,7 +378,7 @@ export class DynamicTableComponent {
         width: '250px',
         // After deleting you will require to indent all the data again..
         data: { 
-          message: 'Cannot be dragged as it has children components',
+          message: 'Cannot be dragged as it has dependent childs',
           // actionName: 'Ok'
           action: false
         }
@@ -390,6 +414,7 @@ export class DynamicTableComponent {
     if(prevCompo === undefined && nextCompo === undefined){
       currentComp.parent = ""
       currentComp.level = 0
+      currentComp.canIndent = true
       console.log("rows", this.rows)
       return
     }
@@ -397,6 +422,7 @@ export class DynamicTableComponent {
     if(prevCompo === undefined){
       currentComp.parent = nextCompo.parent
       currentComp.level = nextCompo.level
+      currentComp.canIndent = true
       console.log("rows", this.rows)
       return
     }
@@ -404,6 +430,7 @@ export class DynamicTableComponent {
     if(nextCompo === undefined){
       currentComp.parent = prevCompo.parent
       currentComp.level = prevCompo.level
+      currentComp.canIndent = true
       console.log("rows", this.rows)
       return
     }
@@ -412,6 +439,7 @@ export class DynamicTableComponent {
       currentComp.parent = prevCompo.parent
       currentComp.level = prevCompo.level
       console.log("rows", this.rows)
+      currentComp.canIndent = true
       return
     }
 
@@ -420,6 +448,7 @@ export class DynamicTableComponent {
     if(prevCompo?.parent === nextCompo?.parent){
       currentComp.parent = prevCompo.parent
       currentComp.level = prevCompo.level
+      currentComp.canIndent = true
       return
       // this.indent(currentIndexData, event.currentIndex)
     }
@@ -429,6 +458,7 @@ export class DynamicTableComponent {
     if(prevCompo?.parent === "" || prevCompo?.parent !== nextCompo?.parent){
       currentComp.parent = nextCompo.parent
       currentComp.level = nextCompo.level
+      currentComp.canIndent = true
       return
     }
 
@@ -508,5 +538,13 @@ export class DynamicTableComponent {
       console.log("rows", this.rows)
     }
   }
+
+  // onIndentAllZero(){
+  //   this.rows.forEach((row, idx) => {
+  //     row.level = 0
+  //     row.parent = ""
+  //     row.canIndent = true
+  //   });
+  // }
 
 }

@@ -3,6 +3,7 @@
 <button (click)="addColumn()" [disabled]="rows.length > 0">Add Column</button>
 <button (click)="addRow()">Add Row</button>
 <button (click)="onSave()">Save</button>
+<!-- <button (click)="onIndentAllZero()">Indent All To 0</button> -->
 <br>
 <br>
 <table>
@@ -52,6 +53,8 @@
             <!-- [disabled]="!row.listEditable"  -->
             <select class="controls"  [(ngModel)]="row[column.name]" [ngStyle]="{ 'padding-left.px': row.level * 20 }"
                     (change)="onChangeRowType(row, column)">
+                    <!-- getAvailableOptions(column, row) -->
+                    <!-- [ngValue]="option.name" -->
               <option *ngFor="let option of column.options">{{ option.name }}</option>
            
             <!-- <ng-container *ngFor="let option of column.options">
